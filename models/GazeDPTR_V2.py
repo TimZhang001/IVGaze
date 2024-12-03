@@ -1,8 +1,5 @@
 import torch
 import torch.nn as nn 
-import numpy as np
-import math
-import copy
 from IVModule import Backbone, Transformer, PoseTransformer, TripleDifferentialProj, PositionalEncoder
 
 

@@ -1,16 +1,17 @@
-import os, sys
+import os
+import sys
+
+import importlib
+import torch
+import yaml
+import copy
+from easydict import EasyDict as edict
+
 base_dir = os.getcwd()
 sys.path.insert(0, base_dir)
-import model
-import importlib
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import cv2, yaml, copy
-from easydict import EasyDict as edict
-import ctools, gtools
-import argparse
+import models.model as model  # noqa: E402
+import ctools  # noqa: E402
+import gtools  # noqa: E402
 
 def main(train, test):
 
@@ -40,7 +41,9 @@ def main(train, test):
 
     # =============================> Test <==============================
 
-    begin = load.begin_step; end = load.end_step; step = load.steps
+    begin = load.begin_step
+    end = load.end_step
+    step = load.steps
 
     for saveiter in range(begin, end+step, step):
         print(f"Test {saveiter}") 
@@ -55,9 +58,13 @@ def main(train, test):
         )
 
 
-        net.cuda(); net.load_state_dict(statedict); net.eval()
+        net.cuda()
+        net.load_state_dict(statedict)
+        net.eval()
 
-        length = len(dataset); accs = 0; count = 0
+        length = len(dataset)
+        accs = 0
+        count = 0
 
         # -----------------------Open log file--------------------------------
         logname = f"{saveiter}.log"
@@ -78,7 +85,8 @@ def main(train, test):
             for j, (data, label) in enumerate(dataset):
 
                 for key in data:
-                    if key != 'name': data[key] = data[key].cuda()
+                    if key != 'name': 
+                        data[key] = data[key].cuda()
 
                 names =  data["name"]
 

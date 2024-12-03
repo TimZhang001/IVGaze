@@ -1,20 +1,21 @@
-import sys,os
-base_dir = os.getcwd()
-sys.path.insert(0, base_dir)
-import model
+import sys
+import os
+
 import importlib
-import numpy as np
 import torch
-import torch.nn as nn
 import torch.optim as optim
-import copy
 import yaml
-import cv2
-import ctools
+
 from easydict import EasyDict as edict
 import torch.backends.cudnn as cudnn
 from warmup_scheduler import GradualWarmupScheduler
 import argparse
+
+
+base_dir = os.getcwd()
+sys.path.insert(0, base_dir)
+import models.model as model  # noqa: E402
+import ctools  # noqa: E402
 
 def main(config):
 
@@ -44,7 +45,8 @@ def main(config):
 
     print("===> Model building <===")
     net = model.Model()
-    net.train(); net.cuda()
+    net.train()
+    net.cuda()
 
 
     # Pretrain 
@@ -84,7 +86,7 @@ def main(config):
                         after_scheduler=scheduler
                     )
 
-    savepath = os.path.join(save.metapath, save.folder, f"checkpoint")
+    savepath = os.path.join(save.metapath, save.folder, "checkpoint")
 
     if not os.path.exists(savepath):
         os.makedirs(savepath)
@@ -109,7 +111,8 @@ def main(config):
 
                 # -------------- forward -------------
                 for key in data:
-                    if key != 'name': data[key] = data[key].cuda()
+                    if key != 'name':
+                        data[key] = data[key].cuda()
 
                 anno = anno.cuda() 
                 loss = net.loss(data, anno)
@@ -128,8 +131,10 @@ def main(config):
                           f"lr:{ctools.GetLR(optimizer)} " +\
                           f"rest time:{rest:.2f}h"
 
-                    print(log); outfile.write(log + "\n")
-                    sys.stdout.flush(); outfile.flush()
+                    print(log)
+                    outfile.write(log + "\n")
+                    sys.stdout.flush()
+                    outfile.flush()
 
             scheduler.step()
 

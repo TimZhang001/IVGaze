@@ -1,16 +1,17 @@
-import os, sys
+import os
+import sys
+import argparse
+import importlib
+import torch
+import yaml
+from easydict import EasyDict as edict
+
 base_dir = os.getcwd()
 sys.path.insert(0, base_dir)
-import model
-import importlib
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import cv2, yaml, copy
-from easydict import EasyDict as edict
-import ctools, gtools
-import argparse
+import models.model as model  # noqa: E402
+import ctools  # noqa: E402
+import gtools  # noqa: E402
+
 
 def main(train, test):
 
